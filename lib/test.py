@@ -5,28 +5,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 model = LitNNSimulator.load_from_checkpoint(
-    "lightning_logs/version_1/checkpoints/epoch=219-step=54999.ckpt"
+    "checkpoints/last.ckpt"
 )
 model.eval()
 
-image = read_image("8210_11.png").unsqueeze(0)/255
+image = read_image("dataset/img/1_9.png").unsqueeze(0)/255
 thickness = th.eye(16)[10].float().unsqueeze(0)
-
-y = model(image, thickness).detach().numpy()[0]
-
-plt.figure()
-plt.plot(np.abs(y[0]), 'r-', label='n0')
-plt.plot(np.abs(y[1]), 'b-', label='n90')
-plt.plot(np.abs(y[0]) - np.abs(y[1]), 'g-', label='n90')
-# plt.plot(y[2], 'r--', label='k0')
-# plt.plot(y[3], 'b--', label='k90')
-plt.xlabel("Freq (THz)")
-plt.ylabel("n")
-plt.legend()
-plt.savefig('n.png')
-plt.close()
-
-# y = np.load("dataset/spectrums/8210.npy")
 
 y = model.spectrum(image, thickness).detach().numpy()[0]
 
