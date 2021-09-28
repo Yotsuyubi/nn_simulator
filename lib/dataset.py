@@ -24,7 +24,7 @@ class NNSimDataset(Dataset):
 
         image = read_image(
             self.getpath("img", self.geometry_params[index]["filename"])
-        )
+        )/255
         if th.rand(1) < 0.3 and not self.is_test:
             image -= th.rand(image.size())*0.9
             image = image.clamp(0.0, 1.0)
@@ -36,7 +36,7 @@ class NNSimDataset(Dataset):
 
         spectrum = np.load(self.getpath("spectrums", "{}.npy".format(index)))
 
-        return (image/255, thickness), np.array(spectrum, dtype=np.float32)
+        return (image, thickness), np.array(spectrum, dtype=np.float32)
 
     def getpath(self, *x):
         return path.join(self.root, *x)

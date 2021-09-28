@@ -79,16 +79,22 @@ if __name__ == "__main__":
     # data
     dataset = NNSimDataset(root="dataset")
     train_num = int(len(dataset)*(1.0 - valid_split_rate))
-    train, val = random_split(dataset, [train_num, len(dataset)-train_num])
+    train, val = random_split(
+        dataset, [train_num, len(dataset)-train_num],
+        generator=th.Generator().manual_seed(0)
+    )
     test_num = int(len(val)*test_split_rate / valid_split_rate)
-    val, test = random_split(val, [len(val)-test_num, test_num])
+    val, test = random_split(
+        val, [len(val)-test_num, test_num],
+        generator=th.Generator().manual_seed(0)
+    )
 
     batchsize = config["batchsize"]
     train_loader = DataLoader(train, batch_size=batchsize,
                               shuffle=True, num_workers=4)
     val_loader = DataLoader(val, batch_size=batchsize,
                             shuffle=False, num_workers=4)
-    test.dataset.test()
+    test.dataset.dataset.test()
     test_loader = DataLoader(test, batch_size=batchsize,
                              shuffle=False, num_workers=4)
 
