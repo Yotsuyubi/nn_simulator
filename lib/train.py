@@ -53,7 +53,7 @@ class LitNNSimulator(pl.LightningModule):
         x, y = train_batch
         y_hat = self.spectrum(*x)
         l1_loss = F.l1_loss(y_hat, y)
-        self.log('loss', l1_loss, prog_bar=True)
+        self.log('train_loss', l1_loss, prog_bar=True)
         return l1_loss
 
     def validation_step(self, val_batch, batch_idx):
@@ -99,12 +99,14 @@ if __name__ == "__main__":
                              shuffle=False, num_workers=4)
 
     # model
-    model = LitNNSimulator(freq_list_txt="freq.txt",
-                           learning_rate=config["learning_rate"])
+    model = LitNNSimulator(
+        freq_list_txt="freq.txt",
+        learning_rate=config["learning_rate"]
+    )
 
     checkpoint_callback = ModelCheckpoint(
         dirpath='checkpoints/', save_last=True,
-        monitor="loss"
+        monitor="train_loss"
     )
 
     # training
@@ -114,7 +116,7 @@ if __name__ == "__main__":
     trainer = pl.Trainer(
         gpus=gpu, callbacks=[checkpoint_callback],
         resume_from_checkpoint=args.resume,
-        max_epochs=999
+        max_epochs=999, log_every_n_steps=2
     )
     trainer.fit(model, train_loader, val_loader)
 

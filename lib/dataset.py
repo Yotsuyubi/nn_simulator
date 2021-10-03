@@ -23,7 +23,7 @@ class NNSimDataset(Dataset):
     def __getitem__(self, index):
 
         image = read_image(
-            self.getpath("img", self.geometry_params[index]["filename"])
+            self.getpath("imgs", self.geometry_params[index]["filename"])
         )/255
         if th.rand(1) < 0.3 and not self.is_test:
             image -= th.rand(image.size())*0.9

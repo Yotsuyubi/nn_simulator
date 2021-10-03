@@ -7,7 +7,7 @@ class Fresnel(nn.Module):
 
     def __init__(self, freq):
         super().__init__()
-        self.freq = freq
+        self.freq = th.tensor(freq)
         self.C = 299_792_458
 
     def forward(self, x, d):
@@ -16,8 +16,7 @@ class Fresnel(nn.Module):
         imp_re = x[:, 4:6, :]
         imp_im = x[:, 6:8, :]
         n_hat = th.abs(n) + 1j*th.abs(k)
-        k_0 = (2.0 * np.pi *
-               self.freq.repeat(x.shape[0], 2, 1) / self.C).type_as(x)
+        k_0 = (2.0 * np.pi * self.freq.repeat(x.shape[0], 2, 1) / self.C).type_as(x)
         Z1 = 1
         Z2 = th.abs(imp_re) + 1j*imp_im
         Z3 = 1
