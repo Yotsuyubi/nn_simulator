@@ -82,21 +82,23 @@ class Model(nn.Module):
         def out_factory():
             layers = [
                 nn.ConvTranspose1d(64, 32, 15, stride=2),
-                nn.ReLU(),
-                nn.Conv1d(32, 32, 5),
-                nn.ReLU(),
+                nn.LeakyReLU(),
+                nn.Conv1d(32, 32, 15),
+                nn.LeakyReLU(),
                 nn.ConvTranspose1d(32, 16, 15, stride=2),
-                nn.ReLU(),
-                nn.Conv1d(16, 16, 5),
-                nn.ReLU(),
+                nn.LeakyReLU(),
+                nn.Conv1d(16, 16, 15),
+                nn.LeakyReLU(),
                 nn.ConvTranspose1d(16, 8, 15, stride=2),
-                nn.ReLU(),
-                nn.Conv1d(8, 8, 5),
-                nn.ReLU(),
+                nn.LeakyReLU(),
+                nn.Conv1d(8, 8, 15),
+                nn.LeakyReLU(),
                 nn.ConvTranspose1d(8, 4, 15, stride=2),
-                nn.ReLU(),
+                nn.LeakyReLU(),
+                nn.Conv1d(4, 4, 15),
+                nn.LeakyReLU(),
+                CenterCrop(self.out_shape),
                 nn.Conv1d(4, 1, 1),
-                CenterCrop(self.out_shape)
             ]
             return nn.Sequential(*layers)
 
