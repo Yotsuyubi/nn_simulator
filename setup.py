@@ -13,7 +13,7 @@ setup(
     name="nn_simulator",
     version="1.0.0",
     packages=find_packages(exclude=["contrib", "docs", "tests"]),
-    python_requires=">=3.7",
+    python_requires=">=3.5",
     install_requires=_requires_from_file('requirements.txt'),
     dependency_links=[],
     include_package_data=True,
