@@ -15,10 +15,11 @@ class Fresnel(nn.Module):
         k = x[:, 2:4, :]
         imp_re = x[:, 4:6, :]
         imp_im = x[:, 6:8, :]
-        n_hat = th.abs(n) + 1j*th.abs(k)
-        k_0 = (2.0 * np.pi * self.freq.repeat(x.shape[0], 2, 1) / self.C).type_as(x)
+        n_hat = n + 1j*k
+        k_0 = (2.0 * np.pi *
+               self.freq.repeat(x.shape[0], 2, 1) / self.C).type_as(x)
         Z1 = 1
-        Z2 = th.abs(imp_re) + 1j*imp_im
+        Z2 = imp_re + 1j*imp_im
         Z3 = 1
         t12 = 2 * Z2 / (Z1 + Z2)
         t23 = 2 * Z3 / (Z2 + Z3)
@@ -107,7 +108,13 @@ class Model(nn.Module):
     def forward(self, x, thickness):
         feature = th.cat([self.feature(x), thickness], dim=1)
         fc = self.fc(feature).view(-1, 64, 35)
-        return th.cat([out(fc) for out in self.out], dim=1)
+        x = th.cat([out(fc) for out in self.out], dim=1)
+        out = th.zeros(x.size()).type_as(x)
+        out[:, 0:2, :] += th.abs(x[:, 0:2, :])  # n
+        out[:, 2:4, :] += th.abs(x[:, 2:4, :])  # k
+        out[:, 4:6, :] += th.abs(x[:, 4:6, :])  # imp_real
+        out[:, 6:8, :] += x[:, 6:8, :]  # imp_imag
+        return out
 
 
 if __name__ == "__main__":

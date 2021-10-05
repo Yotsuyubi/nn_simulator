@@ -62,6 +62,12 @@ class LitNNSimulator(pl.LightningModule):
         loss = F.l1_loss(y_hat, y)
         self.log('val_loss', loss, prog_bar=True)
 
+    def test_step(self, val_batch, batch_idx):
+        x, y = val_batch
+        y_hat = self.spectrum(*x)
+        loss = F.l1_loss(y_hat, y)
+        self.log('test_loss', loss, prog_bar=True)
+
 
 if __name__ == "__main__":
 
@@ -119,5 +125,4 @@ if __name__ == "__main__":
         max_epochs=999, log_every_n_steps=2
     )
     trainer.fit(model, train_loader, val_loader)
-
-    trainer.test(test_loader)
+    trainer.test(dataloaders=test_loader, ckpt_path=None)
