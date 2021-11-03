@@ -72,6 +72,7 @@ class LitNNSimulator(pl.LightningModule):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='train nn-simulator')
+    parser.add_argument('dataset_path')
     parser.add_argument('--hparams', default="hparams.yml")
     parser.add_argument('--resume', default=None)
     args = parser.parse_args()
@@ -83,7 +84,7 @@ if __name__ == "__main__":
     valid_split_rate = config["valid_rate"] + test_split_rate
 
     # data
-    dataset = NNSimDataset(root="dataset")
+    dataset = NNSimDataset(root=args.dataset_path)
     train_num = int(len(dataset)*(1.0 - valid_split_rate))
     train, val = random_split(
         dataset, [train_num, len(dataset)-train_num],
@@ -122,7 +123,7 @@ if __name__ == "__main__":
     trainer = pl.Trainer(
         gpus=gpu, callbacks=[checkpoint_callback],
         resume_from_checkpoint=args.resume,
-        max_epochs=999, log_every_n_steps=2
+        max_epochs=config["max_epochs"], log_every_n_steps=2
     )
     trainer.fit(model, train_loader, val_loader)
     trainer.test(dataloaders=test_loader, ckpt_path=None)

@@ -25,12 +25,12 @@ class NNSimDataset(Dataset):
         image = read_image(
             self.getpath("imgs", self.geometry_params[index]["filename"])
         )/255
-        if th.rand(1) < 0.3 and not self.is_test:
+        if th.rand(1) < 0.5 and not self.is_test:
             image -= th.rand(image.size())*0.9
             image = image.clamp(0.0, 1.0)
 
         thickness = th.eye(16)[self.geometry_params[index]["thickness"]-1]
-        if th.rand(1) < 0.3 and not self.is_test:
+        if th.rand(1) < 0.5 and not self.is_test:
             thickness += th.rand(thickness.size())*0.1
             thickness = th.softmax(thickness, dim=-1)  # soft-label
 

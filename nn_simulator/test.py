@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 model = LitNNSimulator.load_from_checkpoint(
-    "checkpoints/20211004-test=0_0318.ckpt", freq_list_txt="freq.txt"
+    "checkpoints/last.ckpt", freq_list_txt="freq.txt"
 )
 model.eval()
 
